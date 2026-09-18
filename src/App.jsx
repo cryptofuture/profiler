@@ -35,7 +35,7 @@ function useRoute () {
 function Header ({ route, go, locale, setLocale }) {
   const [open, setOpen] = useState(false)
   const t = (key, values) => translate(locale, key, values)
-  const links = [['/results', 'results'], ['/careers', 'careers'], ['/skills', 'skills'], ...(route === '/' ? [] : [['/plan', 'plan']])]
+  const links = [['/results', 'results'], ['/careers', 'careers'], ['/skills', 'skills']]
   return (
     <header class='site-header'>
       <div class='header-inner'>
@@ -228,8 +228,10 @@ function Results ({ state, setState, profile, matches, go, locale }) {
         </Dialog>
       )}
       {['auth', 'error'].includes(aiStatus) && (
-        <Dialog title={t(aiStatus === 'auth' ? 'aiAuthTitle' : 'aiErrorTitle')} description={t(aiStatus === 'auth' ? 'aiUnavailable' : 'aiFailed')} closeLabel={t('close')} onClose={() => setAiStatus('idle')}>
-          <button class='button primary' onClick={() => setAiStatus('idle')}>{t('close')}</button>
+        <Dialog title={t('aiFallbackTitle')} description={t('aiFallbackText')} closeLabel={t('close')} onClose={() => setAiStatus('idle')}>
+          <button class='button secondary' onClick={copyPrompt}><Copy size={16} /> {t(copyStatus === 'copied' ? 'promptCopied' : 'copyPrompt')}</button>
+          <a class='button primary' href='https://chatgpt.com/' target='_blank' rel='noopener noreferrer'>{t('openChatGpt')} <ArrowRight size={16} /></a>
+          {copyStatus === 'error' && <span class='copy-status' role='alert'>{t('promptCopyFailed')}</span>}
         </Dialog>
       )}
     </main>

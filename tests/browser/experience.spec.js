@@ -81,7 +81,7 @@ test('populated pages fit on mobile and AI supports copied prompts and separate 
   expect(copiedPrompt.outputLanguage).toBe('en')
   expect(copiedPrompt.immutableMatches).toHaveLength(5)
   let requestCount = 0
-  await page.route('**/v1/ask', async route => {
+  await page.route('**/v1/profiler-ask', async route => {
     requestCount++
     await route.fulfill({ status: 401, contentType: 'application/json', body: '{"error":"Sign in required"}' })
   })
@@ -89,7 +89,10 @@ test('populated pages fit on mobile and AI supports copied prompts and separate 
   await expect(page.getByRole('dialog')).toContainText('Add another perspective?')
   expect(requestCount).toBe(0)
   await page.getByRole('dialog').getByRole('button', { name: 'Generate AI interpretation' }).click()
-  await expect(page.getByRole('dialog')).toContainText('AI interpretation needs sign-in.')
+  await expect(page.getByRole('dialog')).toContainText('Continue with ChatGPT')
+  await expect(page.getByRole('dialog')).toContainText('paste it into a new chat')
+  await expect(page.getByRole('dialog').getByRole('link', { name: 'Open ChatGPT' })).toHaveAttribute('href', 'https://chatgpt.com/')
+  await expect(page.getByRole('dialog').getByRole('button', { name: 'Copied for ChatGPT' })).toBeVisible()
   expect(requestCount).toBe(1)
   await page.keyboard.press('Escape')
   await expect(page.getByRole('dialog')).toHaveCount(0)

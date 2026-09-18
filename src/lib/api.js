@@ -1,18 +1,47 @@
 import { decode, encode } from '@msgpack/msgpack'
+import { careerCopy } from '../i18n/translations.js'
 
 const apiBase = 'https://btcwid.com/api'
 export const askUrl = `${apiBase.replace(/\/$/, '')}/v1/profiler-ask`
 
-async function decodeBody (response) {
+function tryMessagePack (bytes) {
+  try {
+    return decode(bytes)
+  } catch {
+    return null
+  }
+}
+
+function base64Bytes (value) {
+  if (!value || value.length % 4 !== 0 || !/^[A-Za-z0-9+/]+={0,2}$/.test(value)) return null
+  try {
+    const binary = atob(value)
+    return Uint8Array.from(binary, character => character.charCodeAt(0))
+  } catch {
+    return null
+  }
+}
+
+export async function decodeBody (response) {
   const buffer = await response.arrayBuffer()
   if (!buffer.byteLength) return {}
+  const bytes = new Uint8Array(buffer)
+  const text = new TextDecoder().decode(buffer).trim()
   const contentType = String(response.headers.get('content-type') || '').toLowerCase()
-  if (contentType.includes('application/msgpack') || contentType.includes('application/x-msgpack')) return decode(new Uint8Array(buffer))
-  try {
-    return JSON.parse(new TextDecoder().decode(buffer))
-  } catch {
-    return { error: `Unexpected response (${response.status})` }
+  if (contentType.includes('application/msgpack') || contentType.includes('application/x-msgpack')) {
+    const value = tryMessagePack(bytes)
+    if (value != null) return value
   }
+  try {
+    return JSON.parse(text)
+  } catch {}
+  const wrapped = base64Bytes(text)
+  if (wrapped) {
+    const value = tryMessagePack(wrapped)
+    if (value != null) return value
+  }
+  const value = tryMessagePack(bytes)
+  return value ?? { error: `Unexpected response (${response.status})` }
 }
 
 export async function askCareerModel (message, signal) {
@@ -34,6 +63,7 @@ export async function askCareerModel (message, signal) {
 }
 
 export function parseAiResponse (text) {
+  if (/^User Safety:/i.test(text.trim())) throw new Error('The AI service returned a safety status without an interpretation.')
   const trimmed = text.trim().replace(/^```json\s*/i, '').replace(/\s*```$/, '')
   const value = JSON.parse(trimmed)
   if (!value || typeof value !== 'object' || typeof value.summary !== 'string') throw new Error('Invalid AI response shape.')
@@ -46,7 +76,11 @@ export function buildPrompt ({ locale, profile, matches, targetCareer, weeklyHou
     outputLanguage: locale,
     modelVersion: '1.0.0',
     profile,
-    immutableMatches: matches.slice(0, 5).map(({ careerId, personalFit }) => ({ careerId, personalFit })),
+    immutableMatches: matches.slice(0, 5).map(({ careerId, personalFit }) => ({
+      careerId,
+      careerName: careerCopy[locale]?.[careerId]?.[0] || careerId,
+      personalFit
+    })),
     targetCareer,
     weeklyHours
   })
