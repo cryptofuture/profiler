@@ -7,13 +7,17 @@
     "email": "admin@profiler.top"
   },
   "license": "MIT",
+  "homepage": "https://profiler.top/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cryptofuture/profiler.git"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "verify:fonts": "node scripts/verify-font-cdn.mjs",
-    "lint": "standard \"src/**/*.{js,jsx}\" \"scripts/**/*.mjs\" \"vite.config.js\"",
+    "lint": "standard \"src/**/*.{js,jsx}\" \"vite.config.js\"",
     "test": "vitest run",
     "test:browser": "playwright test"
   },

@@ -10,7 +10,7 @@ The application is not a validated psychological test, professional diagnosis, h
 
 Created by Eugene Gusev. Project contact: [admin@profiler.top](mailto:admin@profiler.top).
 
-The interface loads Golos Text 5.3.0 from cdnjs for headings, body copy, and controls, including Cyrillic Extended coverage for English, Russian, and Kazakh. The four pinned stylesheets use SHA-256 Subresource Integrity attributes. Their hexadecimal checksums live in `SHA256SUMS`; verify the remote files with `npm run verify:fonts`.
+The interface loads Golos Text 5.3.0 from cdnjs for headings, body copy, and controls, including Cyrillic Extended coverage for English, Russian, and Kazakh. The four pinned stylesheets use SHA-256 Subresource Integrity attributes.
 
 The product name is **Profiler** and the production domain is `profiler.top`.
 
@@ -32,7 +32,6 @@ npm run lint
 npm test
 npm run build
 npm run test:browser
-npm run verify:fonts
 ```
 
 Browser checks use Chrome at `/usr/bin/google-chrome`; set `CHROME_PATH` to use another installed Chrome executable.
@@ -42,6 +41,8 @@ Interest questions appear three per page. Complete groups of related activities 
 Completing each assessment page reveals a rotating, translated discovery note. These notes explain the model and encourage reflection without introducing scores, fabricated statistics, or claims about intelligence.
 
 The results page can request interpretation through the configured authenticated API or copy the same constrained prompt for use in ChatGPT. Copying does not send assessment data. Selected assessment options use the logo blue while unselected choices become visually muted.
+
+The homepage includes a matching static HTML fallback for basic crawlers, Organization/WebSite/WebApplication JSON-LD, Open Graph and Twitter metadata, and a generated 1200 by 630 social preview. Repository metadata points to `https://github.com/cryptofuture/profiler` without adding a visible page link.
 
 ## Configuration
 
@@ -74,6 +75,7 @@ Skill readiness uses explicit 0–4 self-ratings. Unknown skills remain unknown 
 - `src/domain/careers.js`: career coefficients, role examples, and skill requirements
 - `src/domain/questions.js`: stable multilingual assessment definitions
 - `src/domain/assessmentPages.js`: related interest triplets and resume behavior
+- `src/domain/homeContent.js`: shared visible and static-fallback homepage guidance
 - `src/domain/scoring.js`: pure profile, matching, and readiness functions
 - `src/domain/plan.js`: deterministic plan construction
 - `src/i18n/translations.js`: English, Russian, and Kazakh interface content
@@ -100,4 +102,4 @@ Build output is written to `dist/`. Configure the host to serve `index.html` for
 
 Profiler is available under the [MIT License](LICENSE).
 
-Copyright © 2026 Eugene Gusev — [admin@profiler.top](mailto:admin@profiler.top).
+Copyright © 2026 Eugene Gusev | [admin@profiler.top](mailto:admin@profiler.top).

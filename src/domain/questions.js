@@ -69,7 +69,7 @@ export const valueQuestions = valueItems.map(([dimension, label], index) => ({
 }))
 
 const aptitudeItems = [
-  ['logical', text('All reports are reviewed. This document is a report. What follows?', 'Все отчёты проверяются. Этот документ — отчёт. Что следует?', 'Барлық есептер тексеріледі. Бұл құжат — есеп. Қандай қорытынды шығады?'), ['It is reviewed', 'It is public', 'Nothing follows'], 0],
+  ['logical', text('All reports are reviewed. This document is a report. What follows?', 'Все отчёты проверяются. Этот документ - отчёт. Что следует?', 'Барлық есептер тексеріледі. Бұл құжат - есеп. Қандай қорытынды шығады?'), ['It is reviewed', 'It is public', 'Nothing follows'], 0],
   ['quantitative', text('A workload rises from 120 to 150 tasks. What is the percentage increase?', 'Нагрузка выросла со 120 до 150 задач. Каков рост в процентах?', 'Жүктеме 120-дан 150 тапсырмаға өсті. Пайыздық өсім қандай?'), ['20%', '25%', '30%'], 1],
   ['verbal', text('Which word is closest to “concise”?', 'Какое слово ближе всего к «краткий»?', '«Ықшам» сөзіне қай сөз жақын?'), ['Detailed', 'Brief', 'Indirect'], 1],
   ['spatial', text('A gear turns clockwise. A touching gear turns…', 'Шестерня вращается по часовой стрелке. Соприкасающаяся шестерня вращается…', 'Тісті доңғалақ сағат тілімен айналады. Оған жанасқан доңғалақ…'), ['Clockwise', 'Counter-clockwise', 'It cannot turn'], 1],
@@ -126,8 +126,8 @@ const reflectionItems = [
   ['currentSkills', 'planning', text('I can turn a goal into practical next steps.', 'Я могу превратить цель в практические следующие шаги.', 'Мақсатты нақты келесі қадамдарға айналдыра аламын.')],
   ['currentSkills', 'collaboration', text('I can contribute effectively to shared work.', 'Я могу эффективно участвовать в совместной работе.', 'Ортақ жұмысқа тиімді үлес қоса аламын.')],
   ['preferences', 'remote', text('The option to work remotely matters to me.', 'Возможность удалённой работы важна для меня.', 'Қашықтан жұмыс істеу мүмкіндігі мен үшін маңызды.')],
-  ['preferences', 'stability', text('Job stability is a high priority for me.', 'Стабильность работы — мой высокий приоритет.', 'Жұмыс тұрақтылығы мен үшін жоғары басымдық.')],
-  ['preferences', 'income', text('Income growth is a high priority for me.', 'Рост дохода — мой высокий приоритет.', 'Табыстың өсуі мен үшін жоғары басымдық.')],
+  ['preferences', 'stability', text('Job stability is a high priority for me.', 'Стабильность работы - мой высокий приоритет.', 'Жұмыс тұрақтылығы мен үшін жоғары басымдық.')],
+  ['preferences', 'income', text('Income growth is a high priority for me.', 'Рост дохода - мой высокий приоритет.', 'Табыстың өсуі мен үшін жоғары басымдық.')],
   ['preferences', 'peopleContact', text('I want regular direct interaction with people.', 'Я хочу регулярно напрямую взаимодействовать с людьми.', 'Адамдармен үнемі тікелей қарым-қатынас жасағым келеді.')],
   ['preferences', 'physicalWork', text('I want some of my work to involve the physical world.', 'Я хочу, чтобы часть моей работы была связана с физическим миром.', 'Жұмысымның бір бөлігі физикалық әлеммен байланысты болғанын қалаймын.')],
   ['preferences', 'training', text('I am open to substantial education or supervised training.', 'Я готов к длительному обучению или практике под руководством.', 'Ұзақ білім алуға немесе жетекшілікпен оқуға дайынмын.')]

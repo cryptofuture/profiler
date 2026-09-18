@@ -126,3 +126,18 @@ test('responsive pages and translated dialogs stay within the viewport', async (
   await expect(page).toHaveURL('/careers')
   await expect(page.getByRole('dialog')).toHaveCount(0)
 })
+
+test('homepage has one primary heading, structured content, metadata, and no Plan link', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.locator('h1')).toHaveCount(1)
+  await expect(page.locator('h1')).toContainText('career')
+  expect(await page.locator('main').innerText().then(text => text.trim().split(/\s+/).length)).toBeGreaterThan(500)
+  expect(await page.locator('h2').count()).toBeGreaterThan(1)
+  await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(1)
+  const schema = JSON.parse(await page.locator('script[type="application/ld+json"]').textContent())
+  expect(schema['@graph'].map(item => item['@type'])).toEqual(expect.arrayContaining(['Organization', 'WebSite', 'WebApplication', 'SoftwareSourceCode']))
+  expect(schema['@graph'].find(item => item['@type'] === 'SoftwareSourceCode').codeRepository).toBe('https://github.com/cryptofuture/profiler')
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', 'https://profiler.top/og-image.png')
+  await expect(page.locator('link[rel="source"]')).toHaveAttribute('href', 'https://github.com/cryptofuture/profiler')
+  await expect(page.getByRole('navigation', { name: 'Main navigation' }).getByText('Plan', { exact: true })).toHaveCount(0)
+})

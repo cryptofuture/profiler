@@ -7,6 +7,7 @@ import {
 } from 'lucide-preact'
 import { careers, careerById } from './domain/careers.js'
 import { buildPlan } from './domain/plan.js'
+import { homeGuideContent } from './domain/homeContent.js'
 import { estimateReadiness, fitLabel, matchCareers, scoreProfile } from './domain/scoring.js'
 import { careerCopy, translate, translateRole, translateSkill, translations } from './i18n/translations.js'
 import { askCareerModel, buildPrompt, parseAiResponse } from './lib/api.js'
@@ -34,7 +35,7 @@ function useRoute () {
 function Header ({ route, go, locale, setLocale }) {
   const [open, setOpen] = useState(false)
   const t = (key, values) => translate(locale, key, values)
-  const links = [['/results', 'results'], ['/careers', 'careers'], ['/skills', 'skills'], ['/plan', 'plan']]
+  const links = [['/results', 'results'], ['/careers', 'careers'], ['/skills', 'skills'], ...(route === '/' ? [] : [['/plan', 'plan']])]
   return (
     <header class='site-header'>
       <div class='header-inner'>
@@ -71,6 +72,7 @@ function CareerIcon ({ career, size = 22 }) {
 
 function Home ({ go, hasProgress, locale }) {
   const t = (key, values) => translate(locale, key, values)
+  const guide = homeGuideContent[locale] || homeGuideContent.en
   const steps = [
     [Sprout, 'stepDiscover', 'stepDiscoverText'],
     [Compass, 'stepExplore', 'stepExploreText'],
@@ -111,12 +113,18 @@ function Home ({ go, hasProgress, locale }) {
       <section class='journey-section page-shell'>
         <div class='journey-intro'><p class='eyebrow'>{t('yourJourney')}</p><h2>{t('trustTitle')}</h2><p>{t('trustText')}</p></div>
         <div class='journey-cards'>
-          {steps.map(([Icon, title, description], index) => (
+          {steps.map(([Icon, title, description]) => (
             <article key={title} class='journey-card'>
-              <div class='journey-card-top'><Icon size={26} /><span>0{index + 1}</span></div>
+              <div class='journey-card-top'><Icon size={26} /></div>
               <h3>{t(title)}</h3><p>{t(description)}</p>
             </article>
           ))}
+        </div>
+      </section>
+      <section class='home-guide page-shell' aria-labelledby='home-guide-title'>
+        <div class='home-guide-heading'><p class='eyebrow'>{guide.label}</p><h2 id='home-guide-title'>{guide.title}</h2><p>{guide.intro}</p></div>
+        <div class='home-guide-grid'>
+          {guide.sections.map(section => <article key={section.title}><h2>{section.title}</h2><p>{section.body}</p></article>)}
         </div>
       </section>
     </main>
@@ -268,8 +276,8 @@ function CareerDetail ({ career, state, setState, profile, matches, go, locale }
         <section class='content-card'><h2>{t('whyFits')}</h2>{match?.personalFit != null ? <ul class='check-list'>{Object.entries(match.components).filter(([, value]) => value.score != null).sort((a, b) => b[1].score - a[1].score).map(([key, value]) => <li key={key}><Check size={17} /> {t(key)}: {Math.round(value.score)}</li>)}</ul> : <p>{t('noResultsYet')}</p>}<p class='index-note'>{t('indexNote')}</p></section>
         <section class='content-card'><h2>{t('roleExamples')}</h2><div class='role-chips'>{career.roles.map(role => <span key={role}>{translateRole(locale, role)}</span>)}</div><h3>{t('sourceContext')}</h3></section>
       </div>
-      <section class='content-card skills-editor'><div class='card-title'><div><h2>{t('skillPreview')}</h2><p>{t('estimatedLevel')}</p></div><div>{t('currentReadiness')}: <strong>{readiness.score ?? '—'}</strong> <small>({readiness.coverage}% {t('evidenceCoverage').toLowerCase()})</small></div></div>
-        {readiness.gaps.map(skill => <div key={skill.id} class='skill-row'><label for={`skill-${skill.id}`}><strong>{translateSkill(locale, skill.id)}</strong><small>{t('targetLevel')}: {skill.target}/4</small></label><select id={`skill-${skill.id}`} value={skill.current ?? ''} onChange={event => setState(current => ({ ...current, skillLevels: { ...current.skillLevels, [skill.id]: event.currentTarget.value === '' ? null : Number(event.currentTarget.value) } }))}><option value=''>{t('unknown')}</option>{translate(locale, 'skillScale').map((label, index) => <option key={index} value={index}>{index} — {label}</option>)}</select></div>)}
+      <section class='content-card skills-editor'><div class='card-title'><div><h2>{t('skillPreview')}</h2><p>{t('estimatedLevel')}</p></div><div>{t('currentReadiness')}: <strong>{readiness.score ?? '-'}</strong> <small>({readiness.coverage}% {t('evidenceCoverage').toLowerCase()})</small></div></div>
+        {readiness.gaps.map(skill => <div key={skill.id} class='skill-row'><label for={`skill-${skill.id}`}><strong>{translateSkill(locale, skill.id)}</strong><small>{t('targetLevel')}: {skill.target}/4</small></label><select id={`skill-${skill.id}`} value={skill.current ?? ''} onChange={event => setState(current => ({ ...current, skillLevels: { ...current.skillLevels, [skill.id]: event.currentTarget.value === '' ? null : Number(event.currentTarget.value) } }))}><option value=''>{t('unknown')}</option>{translate(locale, 'skillScale').map((label, index) => <option key={index} value={index}>{index} - {label}</option>)}</select></div>)}
       </section>
       <div class='detail-cta'><button class={state.targetCareer === career.id ? 'button secondary' : 'button primary'} onClick={() => { setState(current => ({ ...current, targetCareer: career.id, completedTasks: {} })); go('/plan') }}>{state.targetCareer === career.id ? t('selectedTarget') : t('chooseTarget')} <ArrowRight size={16} /></button></div>
     </main>
