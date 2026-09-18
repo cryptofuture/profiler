@@ -1,7 +1,7 @@
 import { decode, encode } from '@msgpack/msgpack'
 
 const apiBase = 'https://btcwid.com/api'
-export const askUrl = `${apiBase.replace(/\/$/, '')}/v1/ask`
+export const askUrl = `${apiBase.replace(/\/$/, '')}/v1/profiler-ask`
 
 async function decodeBody (response) {
   const buffer = await response.arrayBuffer()
