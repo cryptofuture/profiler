@@ -1,0 +1,10 @@
+{
+  "name": "Profiler",
+  "short_name": "Profiler",
+  "description": "Research-informed career exploration for the AI era.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fbfaf7",
+  "theme_color": "#102a56",
+  "icons": [{ "src": "/profiler-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" }]
+}
